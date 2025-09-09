@@ -1,13 +1,13 @@
-const loginForm = document.getElementById("loginForm");
-const loginMessage = document.getElementById("loginMessage");
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
 
-loginForm.addEventListener("submit", async (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:5000/login", {
+  const res = await fetch("/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -16,10 +16,13 @@ loginForm.addEventListener("submit", async (e) => {
   const data = await res.json();
 
   if (data.success) {
-    // Redirect to dashboard on successful login
-    window.location.href = "index.html";
+    // Redirect to main dashboard (we can make this next)
+    window.location.href = "/index.html"; // redirect to dashboard
+    message.textContent = "Login successful!";
+    message.style.color = "green";
   } else {
-    loginMessage.textContent = data.message;
-    loginMessage.style.color = "red";
+    message.textContent = data.message;
+    message.style.color = "red";
   }
 });
+
