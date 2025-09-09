@@ -7,16 +7,14 @@ const multer = require("multer");
 const path = require("path");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  credentials: true
+}));
 app.use(bodyParser.json());
 
-// Serve login page at root
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/login.html"));
-});
-
-
-app.use(express.static(path.join(__dirname, "public"))); // serve frontend
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, "public")));
 
 // Configure PostgreSQL connection
 const pool = new Pool({
@@ -34,12 +32,22 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Temporary in-memory lights data
+let lights = [
+  { id: 1, name: "Living Room", status: false },
+  { id: 2, name: "Kitchen", status: true },
+];
+
 // Routes
 
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public/login.html")));
+// Serve login page at root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/login.html"));
+});
 
+// POST login
 app.post("/login", async (req, res) => {
-  console.log("Login attempt:", req.body); // make sure this logs
+  console.log("Login attempt:", req.body);
   const { username, password } = req.body;
 
   try {
@@ -68,8 +76,28 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// GET all lights
+app.get("/lights", (req, res) => {
+  res.json(lights);
+});
 
-// Add more routes: lights toggle, video upload, video list
+// POST toggle light status
+app.post("/lights/toggle", (req, res) => {
+  const { id } = req.body;
+  const light = lights.find(l => l.id === id);
+  if (light) {
+    light.status = !light.status;
+    res.json(light);
+  } else {
+    res.status(404).json({ message: "Light not found" });
+  }
+});
 
+// Video upload route example (optional)
+app.post("/upload", upload.single("video"), (req, res) => {
+  res.json({ success: true, filename: req.file.filename });
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
