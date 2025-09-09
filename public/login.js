@@ -17,7 +17,7 @@ form.addEventListener("submit", async (e) => {
 
   if (data.success) {
     // Redirect to main dashboard (we can make this next)
-    window.location.href = "/dashboard.html"; // redirect to dashboard
+    window.location.href = "/index.html"; // redirect to dashboard
     message.textContent = "Login successful!";
     message.style.color = "green";
   } else {
