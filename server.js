@@ -5,10 +5,11 @@ const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
+const FRONTEND_URL = "https://lighting-frontend.onrender.com";
 
 const app = express();
 app.use(cors({
-  origin: "*",
+  origin: FRONTEND_URL,
   credentials: true
 }));
 app.use(bodyParser.json());
