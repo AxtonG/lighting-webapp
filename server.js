@@ -1,20 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
+// const cors = require("cors");
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
 
-const FRONTEND_URL = "https://lighting-frontend.onrender.com";
-
 const app = express();
 
 // CORS setup for frontend only
-app.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true
-}));
+// app.use(cors({
+//  origin: FRONTEND_URL,
+//  credentials: true
+// }));
 
 app.use(bodyParser.json());
 
