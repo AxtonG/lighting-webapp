@@ -11,5 +11,7 @@ button {
 h1 {
   text-align: center;
   margin-top: 20px;
+  font-weight: bold;
+  color: rgba(80,0,0,1);
 }
 
