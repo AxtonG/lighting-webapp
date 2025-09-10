@@ -5,28 +5,24 @@ const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
+
 const FRONTEND_URL = "https://lighting-frontend.onrender.com";
 
 const app = express();
+
+// CORS setup for frontend only
 app.use(cors({
   origin: FRONTEND_URL,
   credentials: true
 }));
+
 app.use(bodyParser.json());
 
-// Serve login page at root
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/login.html"));
-});
-
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, "public")));
-
-// Configure PostgreSQL connection
+// PostgreSQL connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL // provided by Render
+  connectionString: process.env.DATABASE_URL
 });
-// Test connection immediately
+
 pool.connect()
   .then(() => console.log("Connected to PostgreSQL"))
   .catch(err => console.error("PostgreSQL connection error:", err));
@@ -38,17 +34,23 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Temporary in-memory lights data
+// Temporary in-memory lights
 let lights = [
   { id: 1, name: "Living Room", status: false },
   { id: 2, name: "Kitchen", status: true },
 ];
 
-// Routes
+// ---------------------- ROUTES ----------------------
 
+// Serve login page at root first
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/login.html"));
+});
 
+// Serve static frontend files (dashboard, CSS, JS)
+app.use(express.static(path.join(__dirname, "public")));
 
-// POST login
+// ---------------------- AUTH ----------------------
 app.post("/login", async (req, res) => {
   console.log("Login attempt:", req.body);
   const { username, password } = req.body;
@@ -79,12 +81,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// GET all lights
+// ---------------------- LIGHTS ----------------------
 app.get("/lights", (req, res) => {
   res.json(lights);
 });
 
-// POST toggle light status
 app.post("/lights/toggle", (req, res) => {
   const { id } = req.body;
   const light = lights.find(l => l.id === id);
@@ -96,11 +97,11 @@ app.post("/lights/toggle", (req, res) => {
   }
 });
 
-// Video upload route example (optional)
+// ---------------------- VIDEO UPLOAD ----------------------
 app.post("/upload", upload.single("video"), (req, res) => {
   res.json({ success: true, filename: req.file.filename });
 });
 
-// Start server
+// ---------------------- START SERVER ----------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
