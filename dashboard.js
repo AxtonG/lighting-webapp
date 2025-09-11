@@ -1,9 +1,9 @@
 const lightsContainer = document.getElementById("lightsContainer");
-const API_URL = "https://lighting-backend-vtj8.onrender.com";
+const API_URL = "";
 
 // Fetch lights from backend
 async function fetchLights() {
-  const res = await fetch(`${API_URL}/lights`);
+  const res = await fetch(`/lights`);
   const lights = await res.json();
   renderLights(lights);
 }
@@ -25,7 +25,7 @@ function renderLights(lights) {
 
 // Toggle light status
 async function toggleLight(id) {
-  const res = await fetch(`${API_URL}/lights/toggle`, {
+  const res = await fetch(`/lights/toggle`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id })

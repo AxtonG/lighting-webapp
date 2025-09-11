@@ -1,3 +1,6 @@
+require('dotenv').config();
+console.log("DATABASE_URL from dotenv:", process.env.DATABASE_URL);
+
 const express = require("express");
 const bodyParser = require("body-parser");
 // const cors = require("cors");
@@ -20,6 +23,8 @@ app.use(bodyParser.json());
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
+
+console.log("Connecting to DB:", process.env.DATABASE_URL);
 
 pool.connect()
   .then(() => console.log("Connected to PostgreSQL"))
@@ -47,6 +52,21 @@ app.get("/", (req, res) => {
 
 // Serve static frontend files (dashboard, CSS, JS)
 app.use(express.static(path.join(__dirname, "public")));
+
+//TESTING
+app.get("/test-users", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT username, password FROM users");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+app.get("/debug-users", async (req, res) => {
+  const result = await pool.query("SELECT username, password FROM users");
+  res.json(result.rows);
+});
+
 
 // ---------------------- AUTH ----------------------
 app.post("/login", async (req, res) => {
