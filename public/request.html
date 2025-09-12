@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<script src="config.js"></script>
+<script src="request.js"></script>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Account</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="request-container">
+    <h2>Request Account</h2>
+    <form id="requestForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="tel" id="phone" placeholder="Phone (optional)">
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Submit Request</button>
+    </form>
+    <p id="message"></p>
+    <p><a href="login.html">Back to Login</a></p>
+  </div>
+
+  <script src="request.js"></script>
+</body>
+</html>
