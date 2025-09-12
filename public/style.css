@@ -88,10 +88,190 @@ p#message {
   transform: translateY(-5px);
 }
 
+/* Dashboard layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0px 8px 25px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+.card h2 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin: 15px 0;
+}
+
+.switch input { display: none; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 26px; width: 26px;
+  left: 4px; bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #6C63FF;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Temperature */
+.temperature {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ff5722;
+  margin: 20px 0;
+}
+
+/* Camera */
+.camera-feed img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+}
+
 /* Fade-in animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Wrapper for dashboard */
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Responsive heading */
+h1 {
+  font-size: clamp(1.5rem, 2.5vw, 2.8rem);
+  margin-bottom: 30px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* RGB color preview */
+.color-preview {
+  width: 60px;
+  height: 60px;
+  margin: 15px auto;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Responsive cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Camera fix */
+.camera-feed img {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Header wrapper */
+.header {
+  width: 100%;
+  text-align: center;
+  padding: 15px 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.15);
+  margin-bottom: 25px;
+}
+
+/* Make sure text adapts for desktop + mobile */
+.header h1 {
+  font-size: clamp(1.4rem, 2.5vw, 2.6rem);
+  margin: 0;
+  color: #333;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* RGB preview box */
+.rgb-display {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.rgb-display .color-preview {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+.rgb-display span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Dashboard title */
+.dashboard-title h1 {
+  font-size: clamp(2.5rem, 4vw, 4rem); /* bigger and scales on mobile */
+  font-weight: 800; /* extra bold */
+  color: #222;
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+
+
+
 
 

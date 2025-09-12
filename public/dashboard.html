@@ -1,16 +1,78 @@
-<!-- public/dashboard.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="temporary_favicon.png" type="image/x-icon">
   <title>Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>Lighting Dashboard</h1>
-    <div id="lightsContainer"></div>
+  <div class="dashboard-wrapper">
+  <div class="dashboard-title">
+    <h1>SafeHaven</h1>
   </div>
-  <script src="dashboard.js"></script>
-</body>
-</html>
+
+  <div class="dashboard-grid">
+    
+    <!-- Combined Lighting Control -->
+    <div class="card">
+      <h2>Lighting Control</h2>
+      <!-- On/Off Switch -->
+      <label class="switch">
+        <input type="checkbox" id="lightSwitch">
+        <span class="slider"></span>
+      </label>
+      <p id="lightStatus">Light is OFF</p>
+
+      <!-- RGB Selector -->
+      <input type="color" id="colorPicker" value="#ff0000">
+      <div class="color-preview" id="colorPreview"></div>
+      <p id="rgbValue">RGB: 255, 0, 0</p>
+    </div>
+
+    <!-- Temperature -->
+    <div class="card">
+      <h2>Temperature</h2>
+      <div class="temperature" id="temperatureValue">-- °C</div>
+    </div>
+
+    <!-- Camera Feed -->
+    <div class="card camera-feed">
+      <h2>Camera</h2>
+      <img src="https://placekitten.com/600/400" alt="Live Camera Feed" id="cameraStream">
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Light switch toggle
+  const lightSwitch = document.getElementById("lightSwitch");
+  const lightStatus = document.getElementById("lightStatus");
+  lightSwitch.addEventListener("change", () => {
+    lightStatus.textContent = lightSwitch.checked ? "Light is ON" : "Light is OFF";
+  });
+
+  // RGB color picker
+  const colorPicker = document.getElementById("colorPicker");
+  const colorPreview = document.getElementById("colorPreview");
+  const rgbValue = document.getElementById("rgbValue");
+
+  function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `${r}, ${g}, ${b}`;
+  }
+
+  colorPicker.addEventListener("input", () => {
+    const hex = colorPicker.value;
+    colorPreview.style.background = hex;
+    rgbValue.textContent = `RGB: ${hexToRgb(hex)}`;
+  });
+
+  // Example temperature (replace with sensor later)
+  document.getElementById("temperatureValue").textContent = "23 °C";
+</script>
