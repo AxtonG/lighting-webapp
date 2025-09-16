@@ -16,8 +16,8 @@ const app = express();
 // CORS setup for frontend only
 //const cors = require("cors");
 //app.use(cors({
-// origin: FRONTEND_URL,
-// credentials: true
+ // origin: FRONTEND_URL,
+ // credentials: true
 //}));
 
 app.use(bodyParser.json());

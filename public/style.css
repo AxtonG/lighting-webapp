@@ -4,6 +4,7 @@ body {
   padding: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #313030; /* dark gray base */
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,7 +104,7 @@ h1, h2 {
   padding-bottom: 5px;
 }
 
-* RGB Control in Dashboard */
+/* RGB Control in Dashboard */
 .rgb-control {
   display: flex;
   flex-direction: column;
@@ -281,23 +282,6 @@ input:checked + .slider:before {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive tweaks */
-@media (max-width: 500px) {
-  .login-container, .dashboard-container {
-    padding: 30px 20px;
-    max-width: 95%;
-  }
-
-  input, button {
-    width: 100%;
-  }
-}
-
-/* Ensure the body scrolls on mobile */
-body {
-  overflow-y: auto; /* allow vertical scroll */
-}
-
 /* Dashboard wrapper fills screen */
 .dashboard-wrapper {
   width: 100%;
@@ -323,22 +307,4 @@ body {
   margin: 10px auto;
   border-radius: 10px;
   border: 2px solid #500000;
-}
-
-@media (max-width: 600px) {
-  body {
-    display: block; /* vertical scroll */
-    padding: 20px 10px;
-  }
-
-  .login-container {
-    width: 95%;
-    max-width: 400px;
-    margin: 20px auto; /* horizontal center, vertical flow natural */
-    padding: 30px 20px;
-  }
-
-  input, button {
-    width: 100%; /* full width on mobile */
-  }
 }
