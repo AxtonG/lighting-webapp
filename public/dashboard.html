@@ -6,6 +6,30 @@
   <link rel="icon" href="temporary_favicon.png" type="image/x-icon">
   <title>Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Additional RGB control styling */
+    .rgb-control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .color-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      border: 2px solid #500000; /* Aggie maroon */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .color-preview:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.7);
+    }
+  </style>
 </head>
 <body>
   <div class="shape square1"></div>
@@ -14,70 +38,79 @@
   <div class="shape triangle2"></div>
 
   <div class="dashboard-wrapper">
-  <div class="dashboard-title">
-    <h1>SafeHaven</h1>
+    <div class="dashboard-title">
+      <h1>SafeHaven</h1>
+    </div>
+
+    <div class="dashboard-grid">
+      
+      <!-- Combined Lighting Control -->
+      <div class="card">
+        <h2>Lighting Control</h2>
+        
+        <!-- On/Off Switch -->
+        <label class="switch">
+          <input type="checkbox" id="lightSwitch">
+          <span class="slider"></span>
+        </label>
+        <p id="lightStatus">Light is OFF</p>
+
+        <!-- RGB Selector -->
+        <div class="rgb-control">
+          <input type="color" id="colorPicker" value="#ff0000" style="display:none;">
+          <div class="color-preview" id="colorPreview"></div>
+          <p id="rgbValue">RGB: 255, 0, 0</p>
+        </div>
+      </div>
+
+      <!-- Temperature -->
+      <div class="card">
+        <h2>Temperature</h2>
+        <div class="temperature" id="temperatureValue">-- °C</div>
+      </div>
+
+      <!-- Camera Feed -->
+      <div class="card camera-feed">
+        <h2>Camera</h2>
+        <img src="https://placekitten.com/600/400" alt="Live Camera Feed" id="cameraStream">
+      </div>
+
+    </div>
   </div>
 
-  <div class="dashboard-grid">
-    
-    <!-- Combined Lighting Control -->
-    <div class="card">
-      <h2>Lighting Control</h2>
-      <!-- On/Off Switch -->
-      <label class="switch">
-        <input type="checkbox" id="lightSwitch">
-        <span class="slider"></span>
-      </label>
-      <p id="lightStatus">Light is OFF</p>
+  <script>
+    // Light switch toggle
+    const lightSwitch = document.getElementById("lightSwitch");
+    const lightStatus = document.getElementById("lightStatus");
+    lightSwitch.addEventListener("change", () => {
+      lightStatus.textContent = lightSwitch.checked ? "Light is ON" : "Light is OFF";
+    });
 
-      <!-- RGB Selector -->
-      <input type="color" id="colorPicker" value="#ff0000">
-      <div class="color-preview" id="colorPreview"></div>
-      <p id="rgbValue">RGB: 255, 0, 0</p>
-    </div>
+    // RGB color picker
+    const colorPicker = document.getElementById("colorPicker");
+    const colorPreview = document.getElementById("colorPreview");
+    const rgbValue = document.getElementById("rgbValue");
 
-    <!-- Temperature -->
-    <div class="card">
-      <h2>Temperature</h2>
-      <div class="temperature" id="temperatureValue">-- °C</div>
-    </div>
+    // Click preview to open color picker
+    colorPreview.addEventListener("click", () => colorPicker.click());
 
-    <!-- Camera Feed -->
-    <div class="card camera-feed">
-      <h2>Camera</h2>
-      <img src="https://placekitten.com/600/400" alt="Live Camera Feed" id="cameraStream">
-    </div>
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `${r}, ${g}, ${b}`;
+    }
 
-  </div>
-</div>
+    // Update preview box and RGB text dynamically
+    colorPicker.addEventListener("input", () => {
+      const hex = colorPicker.value;
+      colorPreview.style.backgroundColor = hex;
+      rgbValue.textContent = `RGB: ${hexToRgb(hex)}`;
+    });
 
-<script>
-  // Light switch toggle
-  const lightSwitch = document.getElementById("lightSwitch");
-  const lightStatus = document.getElementById("lightStatus");
-  lightSwitch.addEventListener("change", () => {
-    lightStatus.textContent = lightSwitch.checked ? "Light is ON" : "Light is OFF";
-  });
-
-  // RGB color picker
-  const colorPicker = document.getElementById("colorPicker");
-  const colorPreview = document.getElementById("colorPreview");
-  const rgbValue = document.getElementById("rgbValue");
-
-  function hexToRgb(hex) {
-    const bigint = parseInt(hex.slice(1), 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    return `${r}, ${g}, ${b}`;
-  }
-
-  colorPicker.addEventListener("input", () => {
-    const hex = colorPicker.value;
-    colorPreview.style.background = hex;
-    rgbValue.textContent = `RGB: ${hexToRgb(hex)}`;
-  });
-
-  // Example temperature (replace with sensor later)
-  document.getElementById("temperatureValue").textContent = "23 °C";
-</script>
+    // Example temperature (replace with sensor later)
+    document.getElementById("temperatureValue").textContent = "23 °C";
+  </script>
+</body>
+</html>
