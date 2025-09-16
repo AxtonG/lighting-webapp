@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="config.js"></script>
   <script src="request.js"></script>
   <link rel="icon" href="temporary_favicon.png" type="image/x-icon">
@@ -14,33 +16,27 @@
   <div class="shape triangle1"></div>
   <div class="shape triangle2"></div>
 
-  <div class="login-container" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+  <div class="login-container">
     <h2>SafeHaven Login</h2>
-    <form id="loginForm" style="display: flex; flex-direction: column; align-items: center; gap: 15px; width: 300px;">
+    <form id="loginForm">
       
       <!-- Username input -->
-      <input type="text" id="username" placeholder="Username" required
-             style="width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box;">
+      <input type="text" id="username" placeholder="Username" required>
 
       <!-- Password input with hold-to-view button -->
-      <div class="password-wrapper" style="position: relative; width: 100%;">
-        <input type="password" id="password" placeholder="Password" required
-               style="width: 100%; padding: 10px 35px 10px 10px; font-size: 16px; box-sizing: border-box;">
-        <button type="button" id="showPassword"
-                style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
-                       width: 30px; height: 30px; padding: 0;
-                       background: #500000; color: #fff; border: none; border-radius: 5px;
-                       cursor: pointer; display: flex; align-items: center; justify-content: center;">👁</button>
+      <div class="password-wrapper">
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="button" id="showPassword">👁</button>
       </div>
 
       <!-- Login button -->
-      <button type="submit" style="width: 100%; padding: 10px; font-size: 16px;">Login</button>
+      <button type="submit">Login</button>
       
     </form>
-    <p id="message" style="text-align: center; margin-top: 10px;"></p>
+    <p id="message"></p>
 
     <!-- Request Account link -->
-    <p style="text-align: center;">Don’t have an account? <a href="request.html">Request Account</a></p>
+    <p>Don’t have an account? <a href="request.html">Request Account</a></p>
   </div>
 
   <script src="login.js"></script>

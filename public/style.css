@@ -4,7 +4,6 @@ body {
   padding: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #313030; /* dark gray base */
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,44 +326,19 @@ body {
 }
 
 @media (max-width: 600px) {
-  .dashboard-container, .login-container {
-    width: 95%;
-    padding: 20px;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr; /* stack cards vertically */
-  }
-
-  input, button {
-    width: 100%; /* make form elements full width */
-  }
-
-  .color-preview {
-    width: 80px;
-    height: 80px;
-  }
-}
-
-/* Center login container on mobile and allow scrolling */
-@media (max-width: 600px) {
   body {
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; /* so scrolling works */
-    padding: 20px 0;
+    display: block; /* vertical scroll */
+    padding: 20px 10px;
   }
 
   .login-container {
     width: 95%;
-    max-width: 400px; /* keeps it from stretching too much */
-    margin: 0 auto;
+    max-width: 400px;
+    margin: 20px auto; /* horizontal center, vertical flow natural */
     padding: 30px 20px;
   }
 
   input, button {
-    width: 100%;
+    width: 100%; /* full width on mobile */
   }
 }
-
-
