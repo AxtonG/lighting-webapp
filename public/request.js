@@ -7,11 +7,12 @@ document.getElementById("requestForm").addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    const response = await fetch(`${BASE_URL}/request-account`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, phone, password })
-    });
+    const response = await fetch("/request-account", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, phone, password })
+});
+
 
     const data = await response.json();
     document.getElementById("message").innerText = data.message || "Request submitted!";

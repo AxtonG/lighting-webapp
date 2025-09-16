@@ -14,10 +14,11 @@ const crypto = require("crypto");
 const app = express();
 
 // CORS setup for frontend only
-// app.use(cors({
-//  origin: FRONTEND_URL,
-//  credentials: true
-// }));
+//const cors = require("cors");
+//app.use(cors({
+// origin: FRONTEND_URL,
+// credentials: true
+//}));
 
 app.use(bodyParser.json());
 
