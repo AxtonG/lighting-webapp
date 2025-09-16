@@ -6,10 +6,11 @@ body {
   background: #313030; /* dark gray base */
   min-height: 100vh;
   display: flex;
+  flex-direction: column; /* stack content naturally */
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* content starts from top */
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden; /* allow vertical scrolling */
   color: #e0e0e0; /* light gray text */
 }
 
@@ -78,16 +79,19 @@ body .shape.triangle2 {
 }
 
 /* Centered containers */
-.login-container, .dashboard-container {
+.login-container,
+.dashboard-container,
+.request-container {
   position: relative;
   z-index: 1;
-  background: #8a8787; /* matches login page */
+  background: #8a8787; /* matches login/dashboard */
   padding: 40px 30px;
   border-radius: 20px;
   box-shadow: 0px 8px 30px rgba(0,0,0,0.5);
   text-align: center;
-  width: 100%;
+  width: 90%; /* responsive width */
   max-width: 400px;
+  margin: 20px auto;
   animation: fadeIn 0.7s ease-in-out;
   border: 2px solid rgba(128,0,0,0.25); /* subtle maroon border */
   color: #f0f0f0;
@@ -122,14 +126,7 @@ h1, h2 {
   margin-bottom: 8px;
 }
 
-#rgbValue {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #f0f0f0; /* light gray to match theme */
-  font-weight: 500;
-}
-
-/* Center the dashboard title */
+/* Dashboard title */
 .dashboard-container h1 {
   display: inline-block;
   margin: 0 auto 25px;
@@ -157,6 +154,7 @@ input {
   text-align: center;
   background: #4a4a4a; /* muted gray input */
   color: #f0f0f0;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -190,6 +188,16 @@ p#message {
   color: #ff9999;
 }
 
+/* Dashboard wrapper */
+.dashboard-wrapper {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 /* Dashboard grid */
 .dashboard-grid {
   display: grid;
@@ -215,7 +223,6 @@ p#message {
   color: #f5f5f5;
 }
 
-/* Optional hover effect for cards */
 .card:hover {
   background: #9a9797; /* slight lightening */
   transform: translateY(-2px);
@@ -282,29 +289,23 @@ input:checked + .slider:before {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Dashboard wrapper fills screen */
-.dashboard-wrapper {
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* stack cards vertically */
+  }
 
-/* Dashboard grid */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  width: 100%;
-}
+  .color-preview {
+    width: 70px;
+    height: 70px;
+  }
 
-/* RGB color preview box */
-.color-preview {
-  width: 100px;
-  height: 100px;
-  margin: 10px auto;
-  border-radius: 10px;
-  border: 2px solid #500000;
+  input, button {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  h1, h2 {
+    font-size: 1.2rem;
+  }
 }
