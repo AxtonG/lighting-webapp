@@ -1,6 +1,6 @@
 require('dotenv').config();
 console.log("DATABASE_URL from dotenv:", process.env.DATABASE_URL);
-
+const baseUrl = process.env.BASE_URL || "http://localhost:5000";
 const express = require("express");
 const bodyParser = require("body-parser");
 // const cors = require("cors");
@@ -53,8 +53,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-
-
 // Multer setup for video uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "videos/"),
@@ -92,11 +90,10 @@ app.get("/debug-users", async (req, res) => {
   res.json(result.rows);
 });
 
-
 // ---------------------- AUTH ----------------------
 app.post("/login", async (req, res) => {
   console.log("Login attempt:", req.body);
-  const { username, password} = req.body;
+  const { username, password } = req.body;
 
   try {
     const userResult = await pool.query(
@@ -148,44 +145,52 @@ app.post("/upload", upload.single("video"), (req, res) => {
   res.json({ success: true, filename: req.file.filename });
 });
 
-// ---------------------- START SERVER ----------------------
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 //------------------ REQUEST ACCOUNT -----------------------
-// --- Request Account Route ---
 app.post("/request-account", async (req, res) => {
   const { username, email, phone, password } = req.body;
 
   try {
     // 1. Check if username already exists
-    const existing = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
-    if (existing.rows.length > 0) {
+    const existingUser = await pool.query(
+      "SELECT 1 FROM users WHERE username = $1",
+      [username]
+    );
+    if (existingUser.rows.length > 0) {
       return res.status(400).json({ message: "Username already exists" });
     }
 
-    // 2. Hash password
+    // 2. Check if email already exists
+    const existingEmail = await pool.query(
+      "SELECT 1 FROM users WHERE email = $1",
+      [email]
+    );
+    if (existingEmail.rows.length > 0) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // 3. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 3. Insert user as "pending"
+    // 4. Insert new user
     const result = await pool.query(
-      "INSERT INTO users (username, email, phone, password_hash, status) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+      "INSERT INTO users (username, email, phone, password_hash, status, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING id",
       [username, email, phone, hashedPassword, "pending"]
     );
 
     const userId = result.rows[0].id;
 
-    // 4. Send email to admin for approval
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.ADMIN_EMAIL,
-        pass: process.env.ADMIN_PASS,
-      },
-    });
-
-    const approvalLink = `${process.env.BASE_URL}/approve-user/${userId}`;
-    const rejectionLink = `${process.env.BASE_URL}/reject-user/${userId}`;
+    // 5. Send email to admin
+    await transporter.sendMail({
+      from: process.env.ADMIN_EMAIL,
+      to: "ad.safehaven@gmail.com", // admin email
+      subject: "New Account Request Pending Approval",
+      text: `A new user has requested an account:\n\n
+Username: ${username}\n
+Email: ${email}\n
+Phone: ${phone}\n
+\nTo approve: ${baseUrl}/approve-user/${userId} 
+\nTo reject: ${baseUrl}/reject-user/${userId}`
+    }); // CHANGE URL WHEN LIVE TO ACTUAL URL
 
     res.json({ message: "Request submitted! Awaiting admin approval." });
 
@@ -195,62 +200,50 @@ app.post("/request-account", async (req, res) => {
   }
 });
 
-app.get("/reject/:token", async (req, res) => {
-  const token = req.params.token;
-  try {
-    const q = await pool.query(
-      `SELECT at.id as tid, at.user_id, at.expires_at, at.used, u.username, u.email
-       FROM approval_tokens at
-       JOIN users u ON u.id = at.user_id
-       WHERE at.token = $1`,
-      [token]
-    );
-
-    if (q.rows.length === 0) return res.status(404).send("Invalid token.");
-    const row = q.rows[0];
-    if (row.used) return res.send("This link has already been used.");
-    if (new Date(row.expires_at) < new Date()) return res.send("Token expired.");
-
-    // mark token used and set user status to rejected (or delete)
-    await pool.query("UPDATE approval_tokens SET used = true WHERE id = $1", [row.tid]);
-    await pool.query("UPDATE users SET status='rejected' WHERE id=$1", [row.user_id]);
-
-    // optionally notify user via email
-    await transporter.sendMail({
-      from: process.env.ADMIN_EMAIL,
-      to: row.email,
-      subject: "Your account request was rejected",
-      text: `Hi ${row.username}, your account request was rejected by the administrator.`
-    });
-
-    return res.send("User rejected.");
-  } catch (err) {
-    console.error("reject error:", err);
-    return res.status(500).send("Server error rejecting user.");
-  }
-});
-
-// Approve user
 app.get("/approve-user/:id", async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query("UPDATE users SET status = 'approved' WHERE id = $1", [id]);
-    res.send("✅ User approved! They can now log in.");
+    res.send("✅ User has been approved successfully!");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error approving user");
+    console.error("Error approving user:", err);
+    res.status(500).send("Server error while approving user.");
   }
 });
 
-// Reject user
 app.get("/reject-user/:id", async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query("DELETE FROM users WHERE id = $1", [id]);
-    res.send("❌ User rejected and removed.");
+    res.send("❌ User has been rejected and removed.");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error rejecting user");
+    console.error("Error rejecting user:", err);
+    res.status(500).send("Server error while rejecting user.");
   }
 });
 
+// ---------------------- CLEANUP PENDING USERS ----------------------
+async function cleanupPendingUsers() {
+  try {
+    const hours = Number(process.env.TOKEN_EXPIRY_HOURS || 72);
+    const cutoff = new Date(Date.now() - hours * 3600 * 1000);
+
+    const result = await pool.query(
+      "DELETE FROM users WHERE status = 'pending' AND created_at < $1 RETURNING id, username, email",
+      [cutoff]
+    );
+
+    if (result.rowCount > 0) {
+      console.log(`Deleted ${result.rowCount} pending user(s):`, result.rows.map(r => r.username));
+    }
+  } catch (err) {
+    console.error("Error cleaning up pending users:", err);
+  }
+}
+
+// Run cleanup every hour
+setInterval(cleanupPendingUsers, 3600*1000);
+
+// ---------------------- START SERVER ----------------------
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
