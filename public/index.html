@@ -4,6 +4,15 @@
   <link rel="icon" href="temporary_favicon.png" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    /* Prevent iOS gesture events (gesturestart/gesturechange) where supported */
+    (function() {
+      document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
+      document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
+      document.addEventListener('gestureend', function(e) { e.preventDefault(); }, { passive: false });
+    })();
+  </script>
   <title>Lighting Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>

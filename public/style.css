@@ -309,3 +309,22 @@ input:checked + .slider:before {
     font-size: 1.2rem;
   }
 }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw; /* always occupy the full viewport width */
+}
+
+.dashboard-wrapper,
+.login-container,
+.request-container {
+  width: 100%;        /* take full width */
+  max-width: none;    /* remove 400px cap */
+  min-height: 100vh;  /* force full screen height */
+  margin: 0;          /* no auto-centering shrink */
+  border-radius: 0;   /* optional: remove rounded corners if you want full bleed */
+}
